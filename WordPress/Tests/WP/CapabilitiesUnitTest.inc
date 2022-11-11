@@ -82,3 +82,6 @@ add_menu_page($p, $t, 'level_' . $level ); // Low severity warning.
 
 // Parse error, but just making sure we account for all possibilities.
 add_menu_page($p, $t, 'level_' 'level' ); // Low severity warning.
+
+// Another parse error, but the sniff should still handle this correctly (by bowing out).
+add_menu_page( $p, $t, /* deliberately empty */, $slug, );
