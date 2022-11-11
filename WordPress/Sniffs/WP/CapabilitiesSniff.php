@@ -3,14 +3,18 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\WP;
+namespace WordPressCS\WordPress\Sniffs\WP;
 
-use WordPress\AbstractFunctionParameterSniff;
-use PHP_CodeSniffer_Tokens as Tokens;
+use PHP_CodeSniffer\Util\Tokens;
+use PHPCSUtils\Utils\MessageHelper;
+use PHPCSUtils\Utils\PassedParameters;
+use PHPCSUtils\Utils\TextStrings;
+use WordPressCS\WordPress\AbstractFunctionParameterSniff;
+use WordPressCS\WordPress\Helpers\MinimumWPVersionTrait;
 
 /**
  * Check that capabilities are used correctly.
@@ -19,23 +23,24 @@ use PHP_CodeSniffer_Tokens as Tokens;
  *
  * @package WPCS\WordPressCodingStandards
  *
- * @since   1.0.0
+ * @since   3.0.0
  */
 class CapabilitiesSniff extends AbstractFunctionParameterSniff {
+	use MinimumWPVersionTrait;
 
 	/**
-	 * Only check for known capabilites.
+	 * Only check for known capabilities.
 	 *
-	 * @since 1.0.0
+	 * @since 3.0.0
 	 *
 	 * @var boolean
 	 */
 	public $check_only_known_caps = true;
 
 	/**
-	 * List of custom capabilites.
+	 * List of custom capabilities.
 	 *
-	 * @since 1.0.0
+	 * @since 3.0.0
 	 *
 	 * @var array
 	 */
@@ -44,7 +49,7 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 	/**
 	 * The group name for this group of functions.
 	 *
-	 * @since 1.0.0
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -59,36 +64,97 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 	 * `/wp-includes/capabilities.php`.
 	 * The list is sorted alphabetically.
 	 *
-	 * @since 1.0.0
+	 * @since 3.0.0
 	 *
 	 * @var array Function name with parameter position.
 	 */
 	protected $target_functions = array(
-		'add_comments_page'         => 3,
-		'add_dashboard_page'        => 3,
-		'add_links_page'            => 3,
-		'add_management_page'       => 3,
-		'add_media_page'            => 3,
-		'add_menu_page'             => 3,
-		'add_object_page'           => 3,
-		'add_options_page'          => 3,
-		'add_pages_page'            => 3,
-		'add_plugins_page'          => 3,
-		'add_posts_page'            => 3,
-		'add_submenu_page'          => 4,
-		'add_theme_page'            => 3,
-		'add_users_page'            => 3,
-		'add_utility_page'          => 3,
-		'author_can'                => 2,
-		'current_user_can'          => 1,
-		'current_user_can_for_blog' => 2,
-		'user_can'                  => 2,
+		'add_comments_page'         => array(
+			'position' => 3,
+			'name'     => 'capability',
+		),
+		'add_dashboard_page'        => array(
+			'position' => 3,
+			'name'     => 'capability',
+		),
+		'add_links_page'            => array(
+			'position' => 3,
+			'name'     => 'capability',
+		),
+		'add_management_page'       => array(
+			'position' => 3,
+			'name'     => 'capability',
+		),
+		'add_media_page'            => array(
+			'position' => 3,
+			'name'     => 'capability',
+		),
+		'add_menu_page'             => array(
+			'position' => 3,
+			'name'     => 'capability',
+		),
+		'add_object_page'           => array( // Deprecated.
+			'position' => 3,
+			'name'     => 'capability',
+		),
+		'add_options_page'          => array(
+			'position' => 3,
+			'name'     => 'capability',
+		),
+		'add_pages_page'            => array(
+			'position' => 3,
+			'name'     => 'capability',
+		),
+		'add_plugins_page'          => array(
+			'position' => 3,
+			'name'     => 'capability',
+		),
+		'add_posts_page'            => array(
+			'position' => 3,
+			'name'     => 'capability',
+		),
+		'add_submenu_page'          => array(
+			'position' => 4,
+			'name'     => 'capability',
+		),
+		'add_theme_page'            => array(
+			'position' => 3,
+			'name'     => 'capability',
+		),
+		'add_users_page'            => array(
+			'position' => 3,
+			'name'     => 'capability',
+		),
+		'add_utility_page'          => array( // Deprecated.
+			'position' => 3,
+			'name'     => 'capability',
+		),
+		'author_can'                => array(
+			'position' => 2,
+			'name'     => 'capability',
+		),
+		'current_user_can'          => array(
+			'position' => 1,
+			'name'     => 'capability',
+		),
+		'current_user_can_for_blog' => array(
+			'position' => 2,
+			'name'     => 'capability',
+		),
+		'map_meta_cap'              => array(
+			'position' => 1,
+			'name'     => 'cap',
+		),
+		'user_can'                  => array(
+			'position' => 2,
+			'name'     => 'capability',
+		),
 	);
 
 	/**
-	 * Blacklist of core roles which should not to be used directly.
+	 * Disallow-list of core roles which should not to be used directly.
 	 *
-	 * @since 1.0.0
+	 * @since 3.0.0
 	 *
 	 * @var array Role available in core.
 	 */
@@ -109,7 +175,7 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 	 *
 	 * @link https://github.com/WordPress/wordpress-develop/blob/master/tests/phpunit/tests/user/capabilities.php
 	 *
-	 * @since 1.0.0
+	 * @since 3.0.0
 	 *
 	 * @var array All capabilities available in core.
 	 */
@@ -204,7 +270,7 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 	 *
 	 * @link https://github.com/WordPress/wordpress-develop/blob/master/tests/phpunit/tests/user/capabilities.php
 	 *
-	 * @since 1.0.0
+	 * @since 3.0.0
 	 *
 	 * @var array All deprecated capabilities in core.
 	 */
@@ -225,7 +291,7 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 	/**
 	 * Process the parameters of a matched function.
 	 *
-	 * @since 1.0.0
+	 * @since 3.0.0
 	 *
 	 * @param int    $stackPtr        The position of the current token in the stack.
 	 * @param array  $group_name      The name of the group which was matched.
@@ -235,20 +301,32 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 	 * @return void
 	 */
 	public function process_parameters( $stackPtr, $group_name, $matched_content, $parameters ) {
+		$function_name_lc = strtolower( $matched_content );
+		$function_details = $this->target_functions[ $function_name_lc ];
 
-		$position = $this->target_functions[ $matched_content ];
-		if ( ! isset( $parameters[ $position ] ) ) {
+		$parameter = PassedParameters::getParameterFromStack(
+			$parameters,
+			$function_details['position'],
+			$function_details['name']
+		);
+
+		if ( $parameter === false ) {
 			return;
+		}
+
+		// If the parameter is anything other than T_CONSTANT_ENCAPSED_STRING throw a warning and bow out.
+		for ( $i = $parameter['start']; $i <= $parameter['end']; $i++ ) {
+			if ( $this->tokens[ $i ]['code'] !)
 		}
 
 		$next_not_empty = $this->phpcsFile->findNext(
 			Tokens::$emptyTokens,
-			$parameters[ $position ]['start'],
-			$parameters[ $position ]['end'] + 1,
+			$parameter['start'],
+			$parameter['end'] + 1,
 			true
 		);
 
-		$matched_parameter = $this->strip_quotes( $this->tokens[ $next_not_empty ]['content'] );
+		$matched_parameter = TextStrings::stripQuotes( $this->tokens[ $next_not_empty ]['content'] );
 		if ( isset( $this->core_capabilities[ $matched_parameter ] ) ) {
 			return;
 		}
@@ -259,8 +337,10 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 		}
 
 		if ( isset( $this->deprecated_capabilities[ $matched_parameter ] ) ) {
-			$this->get_wp_version_from_cl();
-			$this->addMessage(
+
+			$this->get_wp_version_from_cli( $this->phpcsFile );
+			MessageHelper::addMessage(
+				$this->phpcsFile,
 				'The capability "%s" found in function call "%s()" has been deprecated since WordPress version %s.',
 				$next_not_empty,
 				version_compare( $this->deprecated_capabilities[ $matched_parameter ], $this->minimum_supported_version, '<' ),
@@ -297,7 +377,6 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 					$matched_content,
 				)
 			);
-			return;
 		}
 	}
 

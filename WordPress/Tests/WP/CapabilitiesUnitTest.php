@@ -39,6 +39,7 @@ class CapabilitiesUnitTest extends AbstractSniffUnitTest {
 			12 => 1,
 			16 => 1,
 			23 => 1,
+			63 => 1,
 		);
 	}
 
