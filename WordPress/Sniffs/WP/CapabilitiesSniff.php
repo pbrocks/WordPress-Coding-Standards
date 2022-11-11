@@ -171,7 +171,7 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 	 * Whitelist of primitive and meta core capabilities.
 	 *
 	 * To be updated after every major release. Sorted as in capabilities tests.
-	 * Last updated for WordPress 4.9.6.
+	 * Last updated for WordPress 6.1.
 	 *
 	 * @link https://github.com/WordPress/wordpress-develop/blob/master/tests/phpunit/tests/user/capabilities.php
 	 *
@@ -266,7 +266,7 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 	 *
 	 * User Levels were  deprecated in version 3.0.
 	 * To be updated after every major release.
-	 * Last updated for WordPress 4.9.6.
+	 * Last updated for WordPress 6.1.
 	 *
 	 * @link https://github.com/WordPress/wordpress-develop/blob/master/tests/phpunit/tests/user/capabilities.php
 	 *
@@ -340,14 +340,13 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 			$first_non_empty = $i;
 		}
 
-		$next_not_empty = $this->phpcsFile->findNext(
-			Tokens::$emptyTokens,
-			$parameter['start'],
-			$parameter['end'] + 1,
-			true
-		);
+		if ( $first_non_empty === null ) {
+			// Parse error. Bow out.
+			return;
+		}
 
-		$matched_parameter = TextStrings::stripQuotes( $this->tokens[ $next_not_empty ]['content'] );
+		$matched_parameter = TextStrings::stripQuotes( $this->tokens[ $first_non_empty ]['content'] );
+
 		if ( isset( $this->core_capabilities[ $matched_parameter ] ) ) {
 			return;
 		}
@@ -363,7 +362,7 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 			MessageHelper::addMessage(
 				$this->phpcsFile,
 				'The capability "%s" found in function call "%s()" has been deprecated since WordPress version %s.',
-				$next_not_empty,
+				$first_non_empty,
 				version_compare( $this->deprecated_capabilities[ $matched_parameter ], $this->minimum_supported_version, '<' ),
 				'Deprecated',
 				array(
@@ -378,7 +377,7 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 		if ( isset( $this->core_roles[ $matched_parameter ] ) ) {
 			$this->phpcsFile->addError(
 				'Capabilities should be used instead of roles. Found "%s" in function call "%s()"',
-				$next_not_empty,
+				$first_non_empty,
 				'RoleFound',
 				array(
 					$matched_parameter,
@@ -391,7 +390,7 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 		if ( false === $this->check_only_known_caps ) {
 			$this->phpcsFile->addWarning(
 				'"%s" is an unknown role or capability. Check the "%s()" function call to ensure it is a capability and not a role.',
-				$next_not_empty,
+				$first_non_empty,
 				'Unknown',
 				array(
 					$matched_parameter,
