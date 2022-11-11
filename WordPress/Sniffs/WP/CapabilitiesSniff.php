@@ -320,16 +320,18 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 			if ( isset( Tokens::$emptyTokens[ $this->tokens[ $i ]['code'] ] ) ) {
 				continue;
 			}
-			
+
 			if ( $this->tokens[ $i ]['code'] !== \T_CONSTANT_ENCAPSED_STRING
 				|| $first_non_empty !== null
 			) {
 				// Throw warning at low severity.
 				$this->phpcsFile->addWarning(
-					'',
-					'NeedsManualCheck',
+					'Non string parameter found, please check if it matches a valid capability',
 					$i,
-					$data,
+					'NeedsManualCheck',
+					array(
+						$parameter['clean']
+					),
 					3 // Message severity set to below default.
 				);
 				return;
