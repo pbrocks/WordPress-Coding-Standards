@@ -7,7 +7,7 @@
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Tests\WP;
+namespace WordPressCS\WordPress\Tests\WP;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
@@ -26,7 +26,6 @@ class CapabilitiesUnitTest extends AbstractSniffUnitTest {
 	 */
 	public function getErrorList() {
 		return array(
-			2  => 1,
 			3  => 1,
 			4  => 1,
 			5  => 1,
@@ -40,6 +39,7 @@ class CapabilitiesUnitTest extends AbstractSniffUnitTest {
 			13 => 1,
 			17 => 1,
 			24 => 1,
+			60 => 1,
 			64 => 1,
 		);
 	}
@@ -51,6 +51,7 @@ class CapabilitiesUnitTest extends AbstractSniffUnitTest {
 	 */
 	public function getWarningList() {
 		return array(
+			2  => 1,
 			31 => 1,
 			32 => 1,
 			33 => 1,
@@ -62,10 +63,28 @@ class CapabilitiesUnitTest extends AbstractSniffUnitTest {
 			46 => 1,
 			54 => 1,
 			55 => 1,
+			61 => 1,
+			69 => 1,
+			72 => 1,
 			75 => 1,
+			77 => 1,
+			79 => 1,
+			82 => 1,
 			87 => 1,
 			88 => 1,
 		);
+	}
+
+	/**
+	 * Set warnings level to 3 to trigger suggestions as warnings.
+	 *
+	 * @param string                  $filename The name of the file being tested.
+	 * @param \PHP_CodeSniffer\Config $config   The config data for the run.
+	 *
+	 * @return void
+	 */
+	public function setCliValues( $filename, $config ) {
+		$config->warningSeverity = 3;
 	}
 
 }

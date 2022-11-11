@@ -29,15 +29,6 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 	use MinimumWPVersionTrait;
 
 	/**
-	 * Only check for known capabilities.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @var boolean
-	 */
-	public $check_only_known_caps = true;
-
-	/**
 	 * List of custom capabilities.
 	 *
 	 * @since 3.0.0
@@ -346,6 +337,19 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 		}
 
 		$matched_parameter = TextStrings::stripQuotes( $this->tokens[ $first_non_empty ]['content'] );
+
+		if ( empty( $matched_parameter ) ) {
+			$this->phpcsFile->addError(
+				'Found empty capability parameter in function call "%s()"',
+				$first_non_empty,
+				'Invalid',
+				array(
+					$matched_content,
+				)
+			);
+			return;
+		}
+
 		if ( isset( $this->core_capabilities[ $matched_parameter ] ) ) {
 			return;
 		}
@@ -356,7 +360,6 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 		}
 
 		if ( isset( $this->deprecated_capabilities[ $matched_parameter ] ) ) {
-
 			$this->get_wp_version_from_cli( $this->phpcsFile );
 			MessageHelper::addMessage(
 				$this->phpcsFile,
@@ -386,17 +389,15 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 			return;
 		}
 
-		if ( false === $this->check_only_known_caps ) {
-			$this->phpcsFile->addWarning(
-				'"%s" is an unknown role or capability. Check the "%s()" function call to ensure it is a capability and not a role.',
-				$first_non_empty,
-				'Unknown',
-				array(
-					$matched_parameter,
-					$matched_content,
-				)
-			);
-		}
+		$this->phpcsFile->addWarning(
+			'"%s" is an unknown role or capability. Check the "%s()" function call to ensure it is a capability and not a role.',
+			$first_non_empty,
+			'Unknown',
+			array(
+				$matched_parameter,
+				$matched_content,
+			)
+		);
 	}
 
 }
