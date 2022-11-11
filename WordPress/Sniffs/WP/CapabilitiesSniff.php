@@ -264,7 +264,7 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 	/**
 	 * List of deprecated core capabilities.
 	 *
-	 * User Levels were  deprecated in version 3.0.
+	 * User Levels were deprecated in version 3.0.
 	 * To be updated after every major release.
 	 * Last updated for WordPress 6.1.
 	 *
@@ -346,12 +346,11 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 		}
 
 		$matched_parameter = TextStrings::stripQuotes( $this->tokens[ $first_non_empty ]['content'] );
-
 		if ( isset( $this->core_capabilities[ $matched_parameter ] ) ) {
 			return;
 		}
 
-		$custom_capabilities = $this->merge_custom_array( $this->custom_capabilities, array(), true );
+		$custom_capabilities = $this->merge_custom_array( $this->custom_capabilities, array() );
 		if ( isset( $custom_capabilities[ $matched_parameter ] ) ) {
 			return;
 		}

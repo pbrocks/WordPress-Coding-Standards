@@ -1,7 +1,5 @@
 <?php
-add_posts_page( 'page_title', 'menu_title', self /* comment */   ::   CAPABILITY, 'menu_slug', 'function' ); // Error.
-add_posts_page( 'page_title', 'menu_title', 'admin' /* comment */   . 'istrator', 'menu_slug', 'function' ); // Error.
-add_posts_page( 'page_title', 'menu_title', 'admin' . 'strator', 'menu_slug', 'function' ); // Error.
+add_posts_page( 'page_title', 'menu_title', 'admin' . 'istrator', 'menu_slug', 'function' ); // Error.
 add_posts_page( 'page_title', 'menu_title', 'administrator', 'menu_slug', 'function' ); // Error.
 add_media_page( 'page_title', 'menu_title', 'editor', 'menu_slug', 'function' ); // Error.
 add_pages_page( 'page_title', 'menu_title', 'author', 'menu_slug', 'function' ); // Error.
@@ -74,7 +72,7 @@ add_menu_page(
 add_menu_page( $p, $t, 'admin' . 'istrator' ); // Low severity warning.
 
 // PHP 8.0 named parameters support.
-add_menu_page( capability: 'foobar', page_title: $p, menu_title: $m ); // Warning
+add_menu_page( capability: 'foobar', page_title: $p, menu_title: $m ); // Warning.
 
 add_menu_page($p, $t, $caps['level'] ); // Low severity warning.
 
@@ -85,3 +83,6 @@ add_menu_page($p, $t, 'level_' 'level' ); // Low severity warning.
 
 // Another parse error, but the sniff should still handle this correctly (by bowing out).
 add_menu_page( $p, $t, /* deliberately empty */, $slug, );
+
+add_posts_page( 'page_title', 'menu_title', self /* comment */   ::   CAPABILITY, 'menu_slug', 'function' ); // Warning.
+add_posts_page( 'page_title', 'menu_title', 'admin' /* comment */   . 'istrator', 'menu_slug', 'function' ); // Warning.

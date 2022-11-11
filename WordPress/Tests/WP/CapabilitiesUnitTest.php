@@ -37,9 +37,10 @@ class CapabilitiesUnitTest extends AbstractSniffUnitTest {
 			10 => 1,
 			11 => 1,
 			12 => 1,
-			16 => 1,
-			23 => 1,
-			63 => 1,
+			13 => 1,
+			17 => 1,
+			24 => 1,
+			64 => 1,
 		);
 	}
 
@@ -50,17 +51,20 @@ class CapabilitiesUnitTest extends AbstractSniffUnitTest {
 	 */
 	public function getWarningList() {
 		return array(
-			30 => 1,
 			31 => 1,
 			32 => 1,
 			33 => 1,
 			34 => 1,
 			35 => 1,
 			36 => 1,
-			41 => 1,
-			45 => 1,
-			53 => 1,
+			37 => 1,
+			42 => 1,
+			46 => 1,
 			54 => 1,
+			55 => 1,
+			75 => 1,
+			87 => 1,
+			88 => 1,
 		);
 	}
 
