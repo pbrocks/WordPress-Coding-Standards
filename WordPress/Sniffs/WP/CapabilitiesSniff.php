@@ -315,8 +315,27 @@ class CapabilitiesSniff extends AbstractFunctionParameterSniff {
 		}
 
 		// If the parameter is anything other than T_CONSTANT_ENCAPSED_STRING throw a warning and bow out.
+		$first_non_empty = null;
 		for ( $i = $parameter['start']; $i <= $parameter['end']; $i++ ) {
-			if ( $this->tokens[ $i ]['code'] !)
+			if ( isset( Tokens::$emptyTokens[ $this->tokens[ $i ]['code'] ] ) ) {
+				continue;
+			}
+			
+			if ( $this->tokens[ $i ]['code'] !== \T_CONSTANT_ENCAPSED_STRING
+				|| $first_non_empty !== null
+			) {
+				// Throw warning at low severity.
+				$this->phpcsFile->addWarning(
+					'',
+					'NeedsManualCheck',
+					$i,
+					$data,
+					3 // Message severity set to below default.
+				);
+				return;
+			}
+
+			$first_non_empty = $i;
 		}
 
 		$next_not_empty = $this->phpcsFile->findNext(

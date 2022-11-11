@@ -64,3 +64,21 @@ if ( author_can( $post, 'custom_cap' ) ) { } // OK.
 
 map_meta_cap( 'edit_posts', $user->ID ); // OK.
 map_meta_cap( 'editor', $user->ID ); // Error.
+
+add_menu_page(
+	$p,
+	$t, // Comment.
+	$capability, // Low severity warning.
+);
+
+add_menu_page( $p, $t, 'admin' . 'istrator' ); // Low severity warning.
+
+// PHP 8.0 named parameters support.
+add_menu_page( capability: 'foobar', page_title: $p, menu_title: $m ); // Warning
+
+add_menu_page($p, $t, $caps['level'] ); // Low severity warning.
+
+add_menu_page($p, $t, 'level_' . $level ); // Low severity warning.
+
+// Parse error, but just making sure we account for all possibilities.
+add_menu_page($p, $t, 'level_' 'level' ); // Low severity warning.
